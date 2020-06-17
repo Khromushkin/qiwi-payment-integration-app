@@ -55,11 +55,10 @@ async function startApp() {
 
 
     async function qiwiNotificationHandler(req, res) {
-        console.log(req.body);
-        console.log(req.headers);
         if (!qiwiApi.checkNotificationSignature(req.headers['x-api-signature-sha256'], req.body, qiwiSecretKey)) {
             throw new Error('WRONG_SIGNATURE')
         }
+        console.log('got bill notification', req.body.bill.billId);
         await customersCollection.updateOne({_id: req.body.bill.billId}, {$set: req.body.bill}, {upsert: true});
         return res.status(204).send();
     }
