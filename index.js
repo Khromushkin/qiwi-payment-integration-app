@@ -8,6 +8,7 @@ const QiwiBillPaymentsAPI = require('@qiwi/bill-payments-node-js-sdk');
 
 const url = process.env.HEROKU_URL;
 const PORT = process.env.PORT || 5000;
+const qiwiSecretKey = process.env.QIWI_SECRET_KEY;
 const qiwiApi = new QiwiBillPaymentsAPI(process.env.QIWI_SECRET_KEY);
 const qiwiPublicKey = process.env.QIWI_PUBLIC_KEY;
 const qiwiEdgeToken = process.env.QIWI_EDGE_TOKEN;
@@ -54,7 +55,10 @@ async function startApp() {
 
 
     async function qiwiNotificationHandler(req, res) {
-        console.log(req.body)
+        console.log(req.body);
+        if (!QiwiBillPaymentsAPI.checkNotificationSignature(req.headers['X-Api-Signature-SHA256'], req.body, qiwiSecretKey)) {
+            throw new Error('WRONG_SIGNATURE')
+        }
         return res.ok();
     }
 
