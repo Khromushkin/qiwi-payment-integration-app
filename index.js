@@ -47,7 +47,7 @@ async function startApp() {
             },
             expirationDateTime: moment().add(1, 'day').toISOString(true)
         })
-        const insertedRes = await customersCollection.updateOne({_id: billId}, {$set: qiwiBill}, {upsert: true});
+        await customersCollection.updateOne({_id: billId}, {$set: qiwiBill}, {upsert: true});
         // const res = await customersCollection.findOne({_id: mongodb.ObjectId(insereRes.insertedId.toString())});
 
         res.send(JSON.stringify(qiwiBill));
@@ -60,7 +60,8 @@ async function startApp() {
         if (!qiwiApi.checkNotificationSignature(req.headers['x-api-signature-sha256'], req.body, qiwiSecretKey)) {
             throw new Error('WRONG_SIGNATURE')
         }
-        return res.ok();
+        await customersCollection.updateOne({_id: req.body.bill.billId}, {$set: req.body.bill}, {upsert: true});
+        return res.status(204).send();
     }
 
     async function convertUsdToRub(usdAmount) {
