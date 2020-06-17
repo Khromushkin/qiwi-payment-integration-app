@@ -30,7 +30,7 @@ async function startApp() {
         .get('/success', (req, res) => res.render('pages/success'))
         .get('/healthcheck', (req, res) => res.send('ok'))
         .post('/checkout', checkoutHandler)
-        .post('qiwi-notification', qiwiNotificationHandler)
+        .post('/qiwi-notification', qiwiNotificationHandler)
         .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
     async function checkoutHandler(req, res) {
