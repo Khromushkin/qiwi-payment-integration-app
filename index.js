@@ -15,10 +15,11 @@ const mongoUrl = process.env.MONGODB_URI;
 const ratesUrl = 'https://edge.qiwi.com/sinap/crossRates';
 
 async function startApp() {
+    console.log('start app begin')
     const mongoConnection = await mongodb.MongoClient.connect(mongoUrl, {useUnifiedTopology: true});
     const customersDb = mongoConnection.db();
     const customersCollection = customersDb.collection('customers');
-
+    console.log('db connected');
     express()
         .use(express.static(path.join(__dirname, 'public')))
         .use(jsonParser)
@@ -37,9 +38,8 @@ async function startApp() {
         const invoiceTemplate = await customersCollection.insertOne({_id: billId, email: invoiceParams.email});
 
         const qiwiBill = await qiwiApi.createBill(billId, {
-            amount: await convertUsdToRub(15),
+            amount: await convertUsdToRub(invoiceParams.amount),
             currency: 'RUB',
-            email: invoiceParams.email,
             successUrl: url + 'success',
             customFields: {
                 themeCode: 'n-khromushkin'
@@ -54,6 +54,7 @@ async function startApp() {
 
 
     async function qiwiNotificationHandler(req, res) {
+        console.log(req.body)
         return res.ok();
     }
 
