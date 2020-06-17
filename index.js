@@ -57,7 +57,7 @@ async function startApp() {
     async function qiwiNotificationHandler(req, res) {
         console.log(req.body);
         console.log(req.headers);
-        if (!qiwiApi.checkNotificationSignature(req.headers['X-Api-Signature-SHA256'], req.body, qiwiSecretKey)) {
+        if (!qiwiApi.checkNotificationSignature(req.headers['x-api-signature-sha256'], req.body, qiwiSecretKey)) {
             throw new Error('WRONG_SIGNATURE')
         }
         return res.ok();
