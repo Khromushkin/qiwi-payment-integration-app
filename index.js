@@ -139,7 +139,7 @@ async function startApp() {
             })
         });
         const payoutResult = await payoutResponse.json();
-        console.log('got payout result for bill', billId, payoutResult.transaction.state.code);
+        console.log('got payout result for bill', billId, payoutResult);
         if (payoutResult && payoutResult.transaction.state.code === 'Accepted') {
             storedBill.payoutResult = payoutResult;
             await customersCollection.updateOne({_id: billId}, {$set: storedBill}, {upsert: true});
